@@ -10,10 +10,6 @@ var margin = {
     right: 40,
     bottom: 100,
     left: 80
-    // top: 50,
-    // right: 50,
-    // bottom: 50,
-    // left: 50
 };
 
 // Subtract border variables to SVG canvas
@@ -81,7 +77,7 @@ d3.csv('assets/data/data.csv').then(function (census) {
         .attr("cx", d => xLinearScale(d.poverty))
         .attr("cy", d => yLinearScale(d.healthcare))
         .attr("r", "15")
-        .attr("fill", "blue")
+        .attr("fill", "Crimson")
         .attr("opacity", ".5");
 
     // circle text to display
@@ -93,16 +89,19 @@ d3.csv('assets/data/data.csv').then(function (census) {
         .attr("y", d => yLinearScale(d.healthcare))
         .style("font-size", "10px")
         .style("text-anchor", "middle")
+        .style("alignment-baseline", "middle")
         .style('fill', 'white')
         .text(d => (d.abbr));
 
     // Step 6: Initialize tool tip
     // ==============================
     var toolTip = d3.tip()
-        .attr("class", "tooltip")
-        .style("background", "black")
+        .attr("data-toggle", "tooltip")
+        .style("background", "darkblue")
         .style("color", "white")
-        .offset([8, -60])
+        .style("text-align", "center")
+        .style("border-radius", "6px")
+        .style("padding", "5px 10px")
         .html(function (d) {
             return (`${d.state}<br>Poverty: ${d.poverty}<br>Healthcare: ${d.healthcare}%`);
         });
@@ -115,33 +114,16 @@ d3.csv('assets/data/data.csv').then(function (census) {
     // Step 8: Create event listeners to display and hide the tooltip
     // ==============================
     circlesGroup.on("mouseover", function (data) {
-        toolTip.show(data, this);
+        toolTip.show(data, this)
+            .transition()
+            .duration(5000);
     })
         // onmouseout event
         .on("mouseout", function (data, index) {
-            toolTip.hide(data);
+            toolTip.hide(data)
+                .transition()
+                .duration(1000);
         });
-
-    // Create "mouseover" event listener to display tool tip.
-    // circlesGroup.on("mouseover", function () {
-    //     d3.select(this)
-    //         .transition()
-    //         .duration(1000)
-    //         .attr("r", 20)
-    //         .attr("fill", "blue");
-    // })
-    //     .on("click", function (d) {
-    //         toolTip.show(d, this);
-    //     })
-
-    //     .on("mouseout", function () {
-    //         d3.select(this)
-    //             .transition()
-    //             .duration(1000)
-    //             .attr("r", 15)
-    //             .attr("fill", "green")
-    //         toolTip.hide()
-    //     });
 
     // Create x axes labels
     chartGroup.append("text")
